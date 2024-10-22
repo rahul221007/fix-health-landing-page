@@ -1,4 +1,4 @@
-export default function Testimonials({ setDarkMode, darkMode }) {
+export default function Testimonials({ darkMode }: { darkMode: boolean }) {
   return (
     <div className={`p-8  ${darkMode ? "bg-gray-400" : "bg-white"}`}>
       <h2
@@ -20,7 +20,7 @@ export default function Testimonials({ setDarkMode, darkMode }) {
               darkMode ? "text-white" : "text-gray-800"
             } italic mb-4`}
           >
-            "Amazing service, highly recommend!"
+            `Amazing service, highly recommend!`
           </p>
           <p
             className={`text-right font-semibold ${
@@ -42,7 +42,7 @@ export default function Testimonials({ setDarkMode, darkMode }) {
               darkMode ? "text-white" : "text-gray-800"
             } italic mb-4`}
           >
-            "The doctors are very professional."
+            `The doctors are very professional.``
           </p>
           <p
             className={`text-right font-semibold ${
