@@ -10,8 +10,8 @@ export default function Home() {
   return (
     <div>
       <HeroSection setDarkMode={setDarkMode} darkMode={darkMode} />
-      <BookingForm setDarkMode={setDarkMode} darkMode={darkMode}  />
-      <Testimonials setDarkMode={setDarkMode} darkMode={darkMode}  />
+      <BookingForm darkMode={darkMode}  />
+      <Testimonials  darkMode={darkMode}  />
     </div>
   );
 }
