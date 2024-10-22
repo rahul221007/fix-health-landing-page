@@ -7,11 +7,11 @@ import { doctors } from "../utils/constants";
 
 const { Step } = Steps;
 
-export default function BookingForm({ setDarkMode, darkMode }) {
+export default function BookingForm({ darkMode }: { darkMode: boolean }) {
   const [step, setStep] = useState(0);
   const [form] = Form.useForm(); // Ant Design's form instance
   const [submitted, setSubmitted] = useState(false);
-  const [cityFromUrl, setCityFromUrl] = useState<string | null>(null);
+  const [cityFromUrl, setCityFromUrl] = useState(""); // no need for explicit typing
   const searchParams = useSearchParams();
 
   useEffect(() => {
@@ -20,34 +20,36 @@ export default function BookingForm({ setDarkMode, darkMode }) {
       setCityFromUrl(city);
       form.setFieldsValue({ city }); // Overwrite the city in the form
     }
-  }, [searchParams]);
+  }, [searchParams, form]);
 
   const INITIAL_VALUES = {
     name: "",
     phone: "",
-    age: "",
+    age: 0,
     city: "",
     occupation: "",
     company: "",
     complaints: "",
     previousExperience: "",
+    selectedDoctor:""
   };
   const [formData, setFormData] = useState(INITIAL_VALUES);
 
-  const uniqueCities = [...new Set(doctors.map((doctor) => doctor.city))];
+  const uniqueCities = Array.from(new Set(doctors.map((doctor) => doctor.city)));
+
 
   const nextStep = async () => {
     try {
       await form.validateFields(); // Validate the current step’s fields
-      setStep(step + 1); // Proceed to the next step only if validation is successful
+      setStep((prevStep) => prevStep + 1); // Proceed to the next step only if validation is successful
     } catch (error) {
       console.log("Validation failed:", error);
     }
   };
 
-  const prevStep = () => setStep(step - 1);
+  const prevStep = () => setStep((prevStep) => prevStep - 1);
 
-  const onFinish = (values: any) => {
+  const onFinish = (values:FormData) => {
     setFormData({ ...formData, ...values });
     if (step === 4) {
       // Final submission step
@@ -56,19 +58,19 @@ export default function BookingForm({ setDarkMode, darkMode }) {
       nextStep();
     }
   };
-  console.log(formData);
-  const handleFormChange = (changedFields: any, allFields: any) => {
+
+  const handleFormChange = (changedFields: Partial<FormData>) => {
     setFormData({ ...formData, ...changedFields });
   };
 
   const filteredDoctors = doctors.filter(
-    (doctor) => doctor?.city?.toLowerCase() === formData?.city?.toLowerCase()
+    (doctor) => doctor.city?.toLowerCase() === formData.city?.toLowerCase()
   );
 
   if (submitted) {
     return (
       <div
-        className={`p-8  ${darkMode ? "bg-gray-600" : "bg-white"} rounded-lg`}
+        className={`p-8 ${darkMode ? "bg-gray-600" : "bg-white"} rounded-lg`}
       >
         <Result
           status="success"
@@ -77,6 +79,7 @@ export default function BookingForm({ setDarkMode, darkMode }) {
           extra={[
             <Button
               type="primary"
+              key="book-another"
               onClick={() => {
                 setStep(0);
                 setSubmitted(false);
@@ -95,12 +98,10 @@ export default function BookingForm({ setDarkMode, darkMode }) {
             column={1}
             className={`${
               darkMode ? "bg-gray-400 text-white" : "bg-white text-black"
-            }  rounded-lg shadow-md p-6`}
+            } rounded-lg shadow-md p-6`}
           >
             <Descriptions.Item label="Name">{formData.name}</Descriptions.Item>
-            <Descriptions.Item label="Phone">
-              {formData.phone}
-            </Descriptions.Item>
+            <Descriptions.Item label="Phone">{formData.phone}</Descriptions.Item>
             <Descriptions.Item label="Age">{formData.age}</Descriptions.Item>
             <Descriptions.Item label="City">{formData.city}</Descriptions.Item>
             <Descriptions.Item label="Occupation">
@@ -130,9 +131,7 @@ export default function BookingForm({ setDarkMode, darkMode }) {
 
   return (
     <div
-      className={`p-8 ${
-        darkMode ? "bg-gray-400" : "bg-white"
-      } rounded-lg border-b`}
+      className={`p-8 ${darkMode ? "bg-gray-400" : "bg-white"} rounded-lg border-b`}
     >
       <Steps current={step}>
         <Step title="Basic Info" />
