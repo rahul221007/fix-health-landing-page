@@ -6,7 +6,13 @@ import HeroImage from "./hero-image.jpg";
 import { Switch } from "antd";
 
 // components/HeroSection.tsx
-export default function HeroSection({ setDarkMode, darkMode }) {
+export default function HeroSection({
+  setDarkMode,
+  darkMode,
+}: {
+  setDarkMode: (darkMode: boolean) => void; // Function type
+  darkMode: boolean; // Boolean type
+}) {
   const handleScroll = () => {
     window.scrollTo({
       top: window.innerHeight,
